@@ -1,0 +1,6 @@
+[submodule "Ab3P"]
+	path = Ab3P
+	url = https://github.com/ncbi-nlp/Ab3P
+[submodule "NCBITextLib"]
+	path = NCBITextLib
+	url = https://github.com/ncbi-nlp/NCBITextLib
