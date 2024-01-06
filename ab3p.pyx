@@ -13,9 +13,9 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with this program.
 If not, see <https://www.gnu.org/licenses/>.
 '''
-
 import os
 from collections import namedtuple
+from contextlib import contextmanager
 from pathlib import Path
 from typing import List
 
@@ -31,9 +31,36 @@ cdef extern from "Ab3P.h":
     cppclass Ab3P:
         void get_abbrs(char* text, vector[AbbrOut] abbrs)
 
-WORD_DATA_PATH = Path(__file__).parent.resolve() / '.ab3p_word_data'
+cdef extern from "scripts.h":
+    cdef int make_word_set(char* file, char* hash)
+    cdef int make_word_count_hash(char* file)
+
+
+WORD_DATA_PATH = Path(__file__).parent.resolve() / 'ab3p_word_data'
 
 Abbr = namedtuple('Abbr', ['sf', 'lf', 'strat', 'prec'])
+
+
+@contextmanager
+def _pushd_word_data():
+    cur_dir = Path(os.curdir).resolve()
+    try:
+        os.chdir(WORD_DATA_PATH)
+        yield
+    finally:
+        os.chdir(cur_dir)
+
+
+def _generate_word_data():
+    word_data = WORD_DATA_PATH / 'WordData'
+    with _pushd_word_data():
+        Path('path_Ab3P').write_text(f'{word_data}{os.path.sep}')
+        make_word_set(str(word_data / 'stop').encode(), 'stop'.encode())
+        make_word_set(str(word_data / 'Lf1chSf').encode(), 'Lf1chSf'.encode())
+        make_word_count_hash(str(word_data / 'SingTermFreq.dat').encode())
+
+
+_generate_word_data()
 
 
 def _get_abbrs(text: str) -> List[Abbr]:
@@ -48,11 +75,6 @@ def _get_abbrs(text: str) -> List[Abbr]:
 
 
 def get_abbrs(text: str) -> List[Abbr]:
-    cur_dir = Path(os.curdir).resolve()
-    (cur_dir / 'path_Ab3P').write_text(f'{WORD_DATA_PATH}{os.path.sep}')
-    try:
+    with _pushd_word_data():
         return _get_abbrs(text)
-    except Exception:
-        raise
-    finally:
-        (cur_dir / 'path_Ab3P').unlink()
+
