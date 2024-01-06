@@ -1,0 +1,10 @@
+276c276
+<    char *ptr=(char*)mmap(0,datf.st_size,PROT_READ,MAP_PRIVATE|MAP_NORESERVE,fld,0);
+---
+>    char *ptr=(char*)mmap(0,datf.st_size,PROT_READ,MAP_PRIVATE|0,fld,0);
+294,295c294,295
+< }  
+<    
+---
+> }
+> 
