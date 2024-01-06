@@ -45,6 +45,12 @@ ext_libraries = [
 
 setup(
     name='ab3p',
+    version='0.1',
+    description='Python bindings for Ab3P',
+    url='https://github.com/OneAdder/ab3py',
+    author='Mikhail Voronov',
+    python_requires='>=3.7',
+    license='LGPL',
     ext_modules=cythonize([ext]),
     data_files=[
         (f'{os.path.sep}ab3p_word_data/WordData', glob('Ab3P/WordData/*')),
