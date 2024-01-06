@@ -1,7 +1,6 @@
-import os
-from glob import glob
 from pathlib import Path
 from setuptools import setup, Extension
+from shutil import copytree
 
 from Cython.Build import cythonize
 
@@ -42,6 +41,7 @@ ext_libraries = [
     ],
 ]
 
+copytree('Ab3P/WordData', Path.home() / '.ab3p_word_data' / 'WordData', dirs_exist_ok=True)
 
 setup(
     name='ab3p',
@@ -52,8 +52,5 @@ setup(
     python_requires='>=3.7',
     license='LGPL',
     ext_modules=cythonize([ext]),
-    data_files=[
-        (f'{os.path.sep}ab3p_word_data/WordData', glob('Ab3P/WordData/*')),
-    ],
     libraries=ext_libraries,
 )

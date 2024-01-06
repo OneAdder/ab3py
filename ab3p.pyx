@@ -36,7 +36,7 @@ cdef extern from "scripts.h":
     cdef int make_word_count_hash(char* file)
 
 
-WORD_DATA_PATH = Path(__file__).parent.resolve() / 'ab3p_word_data'
+WORD_DATA_PATH = Path.home() / '.ab3p_word_data'
 
 Abbr = namedtuple('Abbr', ['sf', 'lf', 'strat', 'prec'])
 
